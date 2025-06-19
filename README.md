@@ -21,10 +21,10 @@ A simple command-line To Do application written in Python.
     ```bash
     git clone <repository-url>
     cd To-Do-App
+    ```
 
-    - An existing PostgreSQL database and user  
-    If you don't have one, you can create them with the following commands (replace `your_db_name`, `your_db_user`, and `your_db_password` with your own values):
-
+    If you do not have a database and user, you can create them with the following commands (replace `your_db_name`, `your_db_user`, and `your_db_password` with your own values):
+    
     ```bash
     # Access the PostgreSQL prompt
     psql -U postgres
@@ -37,8 +37,8 @@ A simple command-line To Do application written in Python.
     ```
 
     Exit the prompt with `\q`.
-    ```
-    - Create a `.env` file in the project root with your database credentials:
+    
+    Create a `.env` file in the project root with your database credentials:
     ```
     DB_NAME=your_db_name
     DB_USER=your_db_user
