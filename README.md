@@ -5,7 +5,6 @@ A simple command-line To Do application written in Python.
 ## Features
 
 - Add, view, and remove tasks
-- Mark tasks as complete
 - Persistent storage
 
 ## Getting Started
@@ -19,7 +18,7 @@ A simple command-line To Do application written in Python.
 
 1. **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/PlamenPenkov123/To-Do-App.git
     cd To-Do-App
     ```
 
