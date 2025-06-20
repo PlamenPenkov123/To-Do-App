@@ -12,6 +12,7 @@ A simple command-line To Do application written in Python.
 ### Prerequisites
 
 - Python 3.x installed
+- Tkinter installed
 - PostgreSQL database
 
 ### Setup

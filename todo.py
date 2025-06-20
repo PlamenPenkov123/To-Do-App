@@ -1,5 +1,7 @@
 # todo.py
 import psycopg2
+import tkinter as tk
+from tkinter import messagebox
 from dotenv import load_dotenv
 import os
 
@@ -34,64 +36,56 @@ cursor.execute("""
 """)
 conn.commit()
 
-# Function to display the main menu
-def show_menu():
-    print("\nTodo List Menu:")
-    print("1. View Todos")
-    print("2. Add Todo")
-    print("3. Remove Todo")
-    print("4. Exit")
-    print("Please choose an option (1-4): \n")
+# GUI app
+root = tk.Tk()
+root.title("Todo List Application")
 
-# Function to display all tasks
-def show_todos():
+# UI elements
+task_entry = tk.Entry(root, width=50)
+task_entry.pack(pady=10)
+
+def refresh_todos():
+    task_listbox.delete(0, tk.END)
     cursor.execute("SELECT id, task FROM todos;")
-    tasks = cursor.fetchall()
-    
-    if not tasks:
-        print("No todos found in the database.")
-    else:
-        print("\nCurrent Todos:")
-        print("----------------")
-        print("ID | Task")
-        for id, task in tasks:
-            print(f"{id}  | {task}")
+    for id, task in cursor.fetchall():
+        task_listbox.insert(tk.END, f"{id}: {task}")
+
 
 # Function to add a new task
 def add_todo():
-    task = input("Enter a new task: ")
-    cursor.execute("INSERT INTO todos (task) VALUES (%s);", (task,))
-    conn.commit()
-    print(f"Task \"{task}\" saved to the database.")
+    tasks = task_entry.get().strip()
+    if tasks:
+        cursor.execute("INSERT INTO todos (task) VALUES (%s);", (tasks,))
+        conn.commit()
+        task_entry.delete(0, tk.END)
+        refresh_todos()
+    else:
+        messagebox.showwarning("Input Error", "Please enter a task.")
 
 # Function to remove a task by ID
 def remove_todo():
-    show_todos()
-    
-    # Get the task ID to remove from the user
-    task_id = input("Enter the ID of the task to remove: ")
-    cursor.execute("DELETE FROM todos WHERE id = %s;", (task_id,))
-    conn.commit()
-    print(f"Task with ID {task_id} has been removed from the database.")
+    selected = task_listbox.curselection()
+    if selected:
+        task_text = task_listbox.get(selected[0])
+        task_id = task_text.split(':')[0]
+        cursor.execute("DELETE FROM todos WHERE id = %s;", (task_id,))
+        conn.commit()
+        refresh_todos()
+    else:
+        messagebox.showwarning("Selection Error", "Please select a task to remove.")
 
 # Main application loop
 def main():
-    print("Welcome to the Todo List application!")
+    refresh_todos()
+    root.mainloop()
 
-    while True:
-        show_menu()
-        choice = input("Choose an option: ")
-        if choice == '1':
-            show_todos()
-        elif choice == '2':
-            add_todo()
-        elif choice == '3':
-            remove_todo()
-        elif choice == '4':
-            print("Exiting the Todo List application. Goodbye!")
-            break
-        else:
-            print("Invalid choice. Please select a valid option (1-4).")
+add_btn = tk.Button(root, text="Add Task", command=add_todo)
+add_btn.pack()
 
+delete_btn = tk.Button(root, text="Delete Selected Task", command=remove_todo)
+delete_btn.pack(pady=5)
+
+task_listbox = tk.Listbox(root, width=50)
+task_listbox.pack(pady=10)
 # Run the app
 main()
